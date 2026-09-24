@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 求职助手 - Agent 模式</title>
+    <style>
+        body { font-family: "Microsoft YaHei", sans-serif; max-width: 760px; margin: 0 auto; padding: 24px; color: #333; background: #f7f8fa; }
+        nav { margin-bottom: 14px; font-size: 14px; }
+        nav a { color: #2f6fed; text-decoration: none; margin-right: 12px; }
+        nav a:hover { text-decoration: underline; }
+        h1 { font-size: 26px; }
+        textarea { width: 100%; height: 120px; box-sizing: border-box; padding: 12px; font-size: 14px; border: 1px solid #ccc; border-radius: 6px; resize: vertical; }
+        button { margin-top: 12px; padding: 10px 28px; font-size: 15px; background: #2f6fed; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+        button:hover { background: #255bd0; }
+        .card { background: #fff; border: 1px solid #e5e5e5; border-radius: 8px; padding: 16px 20px; margin-top: 20px; }
+        .error { color: #d33; background: #fdecec; padding: 10px 14px; border-radius: 6px; }
+        ul { margin: 6px 0 0 0; padding-left: 20px; }
+        li { line-height: 1.8; }
+        pre.answer { background: #f6f8fa; border: 1px solid #e5e5e5; border-radius: 6px; padding: 12px 16px; white-space: pre-wrap; word-break: break-word; font-size: 14px; line-height: 1.7; }
+        h2 { font-size: 18px; margin-top: 0; }
+    </style>
+</head>
+<body>
+    <nav><a href="/">职位匹配</a> | <a href="/agent">Agent 求职顾问</a></nav>
+    <h1>Agent 求职顾问</h1>
+    <p>输入你的求职目标，Agent 会自动调用工具：搜索职位、评估匹配度，再综合给出建议。</p>
+
+    {% if error %}
+    <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <form method="post" action="/agent">
+        <textarea name="goal" placeholder="例如：我想找 Python / Agent 应用开发方向的初级岗位，帮我搜索职位、评估匹配度，并给出学习优先级建议。">{{ goal or '' }}</textarea>
+        <button type="submit">开始</button>
+    </form>
+
+    {% if trace %}
+    <div class="card">
+        <h2>Agent 决策轨迹</h2>
+        <ul>
+            {% for t in trace %}<li>{{ t }}</li>{% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if answer %}
+    <div class="card">
+        <h2>Agent 回答</h2>
+        <pre class="answer">{{ answer }}</pre>
+    </div>
+    {% endif %}
+</body>
+</html>

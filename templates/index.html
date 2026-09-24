@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 求职助手</title>
+    <style>
+        body { font-family: "Microsoft YaHei", sans-serif; max-width: 760px; margin: 0 auto; padding: 24px; color: #333; background: #f7f8fa; }
+        h1 { font-size: 26px; }
+        textarea { width: 100%; height: 160px; box-sizing: border-box; padding: 12px; font-size: 14px; border: 1px solid #ccc; border-radius: 6px; resize: vertical; }
+        button { margin-top: 12px; padding: 10px 28px; font-size: 15px; background: #2f6fed; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+        button:hover { background: #255bd0; }
+        .card { background: #fff; border: 1px solid #e5e5e5; border-radius: 8px; padding: 16px 20px; margin-top: 20px; }
+        .error { color: #d33; background: #fdecec; padding: 10px 14px; border-radius: 6px; }
+        .score { font-size: 40px; font-weight: bold; color: #2f6fed; }
+        ul { margin: 6px 0 0 0; padding-left: 20px; }
+        li { line-height: 1.7; }
+        .tag { display: inline-block; background: #eef4ff; color: #2f6fed; border-radius: 4px; padding: 2px 8px; margin: 2px 4px 2px 0; font-size: 13px; }
+        h2 { font-size: 18px; margin-top: 0; }
+        nav { margin-bottom: 14px; font-size: 14px; }
+        nav a { color: #2f6fed; text-decoration: none; margin-right: 12px; }
+        nav a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <nav><a href="/">职位匹配</a> | <a href="/agent">Agent 求职顾问</a></nav>
+    <h1>AI 求职助手</h1>
+    <p>粘贴一条职位描述，自动提取职位信息，并与你的主简历匹配打分。</p>
+
+    {% if error %}
+    <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <form method="post" action="/match">
+        <textarea name="jd" placeholder="在这里粘贴职位描述（JD）……">{{ jd_text or '' }}</textarea>
+        <button type="submit">开始匹配</button>
+    </form>
+
+    {% if job %}
+    <div class="card">
+        <h2>职位信息（已自动提取）</h2>
+        <p><strong>{{ job.job_title }}</strong> · 要求年限：{{ job.years_experience }}</p>
+        <p>要求技能：
+            {% for s in job.required_skills %}<span class="tag">{{ s }}</span>{% endfor %}
+        </p>
+        <p>岗位职责：
+            {% for r in job.responsibilities %}<span class="tag">{{ r }}</span>{% endfor %}
+        </p>
+    </div>
+    {% endif %}
+
+    {% if result %}
+    <div class="card">
+        <h2>匹配结果</h2>
+        <div class="score">{{ result.score }} <span style="font-size:16px;color:#888;">/ 100</span></div>
+        <p>{{ result.suggestion }}</p>
+
+        <h3>命中技能</h3>
+        <ul>{% for s in result.matched_skills %}<li>{{ s }}</li>{% else %}<li>（无）</li>{% endfor %}</ul>
+
+        <h3>缺失技能</h3>
+        <ul>{% for s in result.missing_skills %}<li>{{ s }}</li>{% else %}<li>（无）</li>{% endfor %}</ul>
+
+        <h3>优势</h3>
+        <ul>{% for s in result.strengths %}<li>{{ s }}</li>{% endfor %}</ul>
+
+        <h3>风险点</h3>
+        <ul>{% for s in result.risks %}<li>{{ s }}</li>{% endfor %}</ul>
+    </div>
+    {% endif %}
+</body>
+</html>
