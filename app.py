@@ -67,5 +67,9 @@ def agent_run():
 
 
 if __name__ == "__main__":
-    # debug=True：代码改动自动重载、出错显示详细堆栈；上线前必须关掉
-    app.run(debug=True)
+    # 生产环境配置：平台会注入 PORT 环境变量；FLASK_DEBUG=1 时才开启调试模式
+    import os
+
+    debug = os.environ.get("FLASK_DEBUG") == "1"
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=debug)
