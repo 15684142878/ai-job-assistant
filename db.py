@@ -164,6 +164,7 @@ def seed_if_empty() -> None:
     部署环境的数据库是全新的，没人能手动执行 python db.py，
     所以应用启动时自动初始化，保证演示页面直接可用。
     """
+    init_db()  # 先保证表存在：云端全新数据库没有表，这是最容易踩的坑
     if get_resume() is None:
         save_resume(DEMO_RESUME)
         print("已自动写入演示简历")
