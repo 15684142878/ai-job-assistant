@@ -70,6 +70,10 @@ if __name__ == "__main__":
     # 生产环境配置：平台会注入 PORT 环境变量；FLASK_DEBUG=1 时才开启调试模式
     import os
 
+    from db import seed_if_empty
+
+    seed_if_empty()  # 全新数据库自动写入演示简历，部署后开箱即用
+
     debug = os.environ.get("FLASK_DEBUG") == "1"
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=debug)

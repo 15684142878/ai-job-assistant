@@ -144,6 +144,28 @@ def get_resume() -> dict | None:
     }
 
 
+# ---------- 演示/初始化数据 ----------
+
+DEMO_RESUME = {
+    "name": "姚蕃淇",
+    "education": "本科 · 计算机科学与技术",
+    "status": "待业，全职求职中（目标：Agent 应用开发）",
+    "skills": ["Python", "Flask", "SQLite", "REST API", "Git", "算法与数据结构", "DeepSeek API", "提示词工程", "Agent 概念"],
+    "projects": "AI求职助手（当前项目）：用 Flask + SQLite + DeepSeek API 实现职位信息提取与匹配打分",
+}
+
+
+def seed_if_empty() -> None:
+    """第一次运行时若没有主简历，自动写入演示简历。
+
+    部署环境的数据库是全新的，没人能手动执行 python db.py，
+    所以应用启动时自动初始化，保证演示页面直接可用。
+    """
+    if get_resume() is None:
+        save_resume(DEMO_RESUME)
+        print("已自动写入演示简历")
+
+
 if __name__ == "__main__":
     # 演示数据：存一条示例职位 + 一份主简历
     from llm_client import chat_json
@@ -161,15 +183,8 @@ if __name__ == "__main__":
     job_id = save_job(job)
     print(f"已存入职位 #{job_id}")
 
-    # 主简历：按你的真实情况填好了，以后随时来改这里
-    resume = {
-        "name": "姚蕃淇",
-        "education": "本科 · 计算机科学与技术",
-        "status": "待业，全职求职中（目标：Agent 应用开发）",
-        "skills": ["Python", "Flask", "SQLite", "REST API", "Git", "算法与数据结构", "DeepSeek API", "提示词工程", "Agent 概念"],
-        "projects": "AI求职助手（当前项目）：用 Flask + SQLite + DeepSeek API 实现职位信息提取与匹配打分",
-    }
-    save_resume(resume)
+    # 主简历：按你的真实情况填好了，以后随时来改 DEMO_RESUME
+    save_resume(DEMO_RESUME)
     print("已保存主简历")
 
     print("=== 数据库里的职位 ===")
