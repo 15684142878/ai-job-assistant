@@ -3,10 +3,14 @@
 from flask import Flask, render_template, request
 
 from agent import run_agent
-from db import get_resume, save_job
+from db import get_resume, save_job, seed_if_empty
 from matcher import extract_job, match_job
 
 app = Flask(__name__)
+
+# 启动即初始化：数据库为空时写入演示简历。
+# 放在模块级（而不是 __main__ 里），保证本地 python app.py 和云端 WSGI 导入都能生效
+seed_if_empty()
 
 
 @app.route("/")
@@ -69,10 +73,6 @@ def agent_run():
 if __name__ == "__main__":
     # 生产环境配置：平台会注入 PORT 环境变量；FLASK_DEBUG=1 时才开启调试模式
     import os
-
-    from db import seed_if_empty
-
-    seed_if_empty()  # 全新数据库自动写入演示简历，部署后开箱即用
 
     debug = os.environ.get("FLASK_DEBUG") == "1"
     port = int(os.environ.get("PORT", 5000))

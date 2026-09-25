@@ -1,9 +1,12 @@
 """db.py — SQLite 存取层（第三课：职位表；第四课：简历表）"""
 
 import json
+import os
 import sqlite3
 
-DB_PATH = "jobs.db"
+# 数据库文件固定放在 db.py 旁边：不管从哪里启动（本地命令行 / 云端 WSGI），
+# 都不会因为"当前目录"不同而把数据写到奇怪的地方
+DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "jobs.db")
 
 
 def get_conn():
